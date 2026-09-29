@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free QR Code Generator - No Signup, Download PNG</title>
+<meta name="description" content="Make a QR code for any link or text. Free, no signup, download as PNG.">
+<style>
+:root{--ink:#1d2b2a;--bg:#e8eeec;--accent:#0f766e;--line:#cfd9d6;--muted:#5d6f6c}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,"Times New Roman",serif;background:var(--bg);color:var(--ink);line-height:1.5}
+header,main,footer{max-width:820px;margin:0 auto;padding:0 20px}
+header{padding-top:28px}
+h1{font-size:1.8rem;margin:0 0 4px}
+header p{margin:0;color:var(--muted)}
+main{display:grid;grid-template-columns:1fr 280px;gap:24px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:28px;margin:16px auto 24px}
+label{display:block;font-size:.85rem;color:var(--muted);margin:14px 0 2px}
+label:first-child{margin-top:0}
+input,textarea,select{width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:4px}
+input[type=color]{padding:2px;height:40px}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+textarea{min-height:90px;resize:vertical}
+.out{text-align:center}
+#qr{display:inline-block;padding:10px;background:#fff;border:1px solid var(--line);min-height:120px}
+#qr img{display:none}
+.btn{background:var(--accent);color:#fff;border:0;padding:12px 22px;border-radius:4px;font:inherit;font-weight:bold;cursor:pointer;margin-top:14px;width:100%}
+nav{padding:0 0 10px}
+nav a,footer a{color:var(--accent)}
+footer{color:var(--muted);font-size:.85rem;padding-bottom:40px}
+@media(max-width:640px){main{grid-template-columns:1fr;padding:18px}}
+</style>
+</head>
+<body>
+<header>
+<h1>Free QR Code Generator</h1>
+<p>Type a link or text, and your QR code appears. Nothing is uploaded.</p>
+</header>
+
+<main>
+<div>
+<label for="text">Link or text</label>
+<textarea id="text" placeholder="https://example.com"></textarea>
+<label for="size">Size</label>
+<select id="size"><option value="200">Small (200 px)</option><option value="300" selected>Medium (300 px)</option><option value="500">Large (500 px)</option><option value="800">Extra large (800 px)</option></select>
+<label for="fg">QR color</label>
+<input type="color" id="fg" value="#000000">
+</div>
+<div class="out">
+<div id="qr"></div>
+<p id="hint" style="color:var(--muted);font-size:.9rem">Your QR code will show here.</p>
+<button class="btn" id="dl" style="display:none">Download PNG</button>
+</div>
+</main>
+
+<footer>
+<nav><a href="./">Invoice generator</a></nav>
+Tip: test the QR code with your phone camera before printing it.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+var $=function(i){return document.getElementById(i)};
+var box=$('qr');
+function make(){
+var t=$('text').value.trim();
+box.innerHTML='';
+if(!t){$('dl').style.display='none';$('hint').style.display='block';return}
+var s=parseInt($('size').value,10);
+new QRCode(box,{text:t,width:s,height:s,colorDark:$('fg').value,colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+box.querySelector('canvas').style.maxWidth='100%';
+box.querySelector('canvas').style.height='auto';
+$('dl').style.display='block';$('hint').style.display='none';
+}
+['text','size','fg'].forEach(function(i){$(i).oninput=make});
+$('dl').onclick=function(){
+var c=box.querySelector('canvas');
+var a=document.createElement('a');
+a.href=c.toDataURL('image/png');a.download='qr-code.png';a.click();
+};
+</script>
+</body>
+</html>
