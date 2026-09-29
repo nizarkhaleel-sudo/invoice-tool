@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Word Counter - Words, Characters, Reading Time</title>
+<meta name="description" content="Count words, characters, sentences and paragraphs instantly. Free word counter with reading time. No signup.">
+<style>
+:root{--ink:#1d2b2a;--bg:#e8eeec;--accent:#0f766e;--line:#cfd9d6;--muted:#5d6f6c}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,"Times New Roman",serif;background:var(--bg);color:var(--ink);line-height:1.5}
+header,main,footer{max-width:820px;margin:0 auto;padding:0 20px}
+header{padding-top:28px}
+h1{font-size:1.8rem;margin:0 0 4px}
+header p{margin:0;color:var(--muted)}
+main{background:#fff;border:1px solid var(--line);border-radius:6px;padding:28px;margin:16px auto 24px}
+textarea{width:100%;min-height:260px;font:inherit;padding:12px;border:1px solid var(--line);border-radius:4px;resize:vertical}
+textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:18px}
+.stat{border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+.stat b{display:block;font-size:1.6rem;color:var(--accent)}
+.stat span{font-size:.85rem;color:var(--muted)}
+.btn{background:#fff;color:var(--ink);border:1px solid var(--line);padding:9px 16px;border-radius:4px;font:inherit;cursor:pointer;margin-top:14px}
+footer{color:var(--muted);font-size:.9rem;padding-bottom:40px}
+footer a{color:var(--accent);margin-right:14px}
+@media(max-width:640px){main{padding:18px}}
+</style>
+</head>
+<body>
+<header>
+<h1>Free Word Counter</h1>
+<p>Paste or type your text. The counts update as you write.</p>
+</header>
+
+<main>
+<textarea id="t" placeholder="Start typing or paste your text here..." aria-label="Your text"></textarea>
+<div class="stats">
+<div class="stat"><b id="w">0</b><span>Words</span></div>
+<div class="stat"><b id="c">0</b><span>Characters</span></div>
+<div class="stat"><b id="cn">0</b><span>Characters without spaces</span></div>
+<div class="stat"><b id="s">0</b><span>Sentences</span></div>
+<div class="stat"><b id="p">0</b><span>Paragraphs</span></div>
+<div class="stat"><b id="r">0 min</b><span>Reading time</span></div>
+<div class="stat"><b id="sp">0 min</b><span>Speaking time</span></div>
+</div>
+<button class="btn" id="clr">Clear text</button>
+</main>
+
+<footer>
+<a href="./">Invoice generator</a><a href="qr.html">QR code generator</a>
+</footer>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+function mins(n,rate){
+if(!n)return '0 min';
+var m=n/rate;
+return m<1?'under 1 min':Math.ceil(m)+' min';
+}
+function count(){
+var v=$('t').value;
+var words=v.trim()?v.trim().split(/\s+/).length:0;
+var sentences=(v.match(/[^.!?؟]+[.!?؟]+|[^.!?؟]+$/g)||[]).filter(function(x){return x.trim()}).length;
+var paras=v.split(/\n\s*\n/).filter(function(x){return x.trim()}).length;
+$('w').textContent=words;
+$('c').textContent=v.length;
+$('cn').textContent=v.replace(/\s/g,'').length;
+$('s').textContent=sentences;
+$('p').textContent=paras;
+$('r').textContent=mins(words,200);
+$('sp').textContent=mins(words,130);
+}
+$('t').oninput=count;
+$('clr').onclick=function(){$('t').value='';count();$('t').focus()};
+</script>
+</body>
+</html>
